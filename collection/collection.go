@@ -1,4 +1,6 @@
-package collection
+package hicollection
+
+import "encoding/json"
 
 /*
 集合处理工具方法包
@@ -36,4 +38,26 @@ func ListUniqueForInterface(elements []interface{}) []interface{} {
 	}
 
 	return result
+}
+
+// PraseDataToStruct 将数据转换成结构体
+func PraseDataToStruct(originData interface{}, targetStruct interface{}) error {
+	// 首先判断originData是不是[]byte类型
+	jsonOriginData, ok := originData.([]byte)
+
+	// 如果不是[]byte类型，就转换成[]byte类型
+	if !ok {
+		var jsonErr error
+		jsonOriginData, jsonErr = json.Marshal(originData)
+		if jsonErr != nil {
+			return jsonErr
+		}
+	}
+
+	// 进行json处理
+	if err := json.Unmarshal(jsonOriginData, targetStruct); err != nil {
+		return err
+	}
+
+	return nil
 }
