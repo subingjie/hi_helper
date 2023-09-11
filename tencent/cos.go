@@ -1,6 +1,8 @@
 package tencent
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -34,13 +36,18 @@ func NewClient(buckName string, appId string, secretId string, secretKey string,
 }
 
 // Upload 上传文件
-func Upload(client *cos.Client, localFile string, cosFile string) error {
+func Upload(data []byte, cosPath string, client *cos.Client) error {
 
-	_, err := client.Object.PutFromFile(nil, cosFile, localFile, nil)
+	file := bytes.NewReader(data)
 
-	return err
+	_, err := client.Object.Put(context.Background(), cosPath, file, nil)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func GetCosFile() {
-
+// GetCosFile 获取cos文件数据
+func GetCosFile() ([]byte, error) {
+	return nil, nil
 }
