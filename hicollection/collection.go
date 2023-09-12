@@ -1,6 +1,10 @@
 package hicollection
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"sort"
+	"time"
+)
 
 /*
 集合处理工具方法包
@@ -60,4 +64,30 @@ func PraseDataToStruct(originData interface{}, targetStruct interface{}) error {
 	}
 
 	return nil
+}
+
+// sortListByInt 根据int类型的key对map进行排序
+func sortListByIntKey(data []map[string]interface{}, key string) []map[string]interface{} {
+
+	sort.SliceStable(data, func(i, j int) bool {
+		value1 := data[i][key].(int64)
+		value2 := data[j][key].(int64)
+
+		return value1 < value2
+	})
+
+	return data
+}
+
+// sortListByTimeStrKey 根据时间字符串类型的key对map进行排序
+func sortListByTimeStrKey(data []map[string]interface{}, key string) []map[string]interface{} {
+	sort.SliceStable(data, func(i, j int) bool {
+
+		time1, _ := time.Parse("2006-01-02 15:04:05", data[i][key].(string))
+		time2, _ := time.Parse("2006-01-02 15:04:05", data[j][key].(string))
+
+		return time1.Before(time2)
+	})
+
+	return data
 }
